@@ -176,3 +176,44 @@ end//
     
     /*Los ejercicios aparecen desordenados porque he probado que todos funcionen en cascada y a la vez*/
     
+    
+    /*Ejercicios corregidos por el samu*/
+    
+    /*/Ejercicio 4/
+
+delimiter //
+create trigger calidad_peliculas
+after insert on Peliculas
+for each row
+begin
+declare calidad enum ("buena", "regular", "mala");
+if NEW.nota_peli>5 then 
+set calidad="buena";
+elseif NEW.nota_peli<5 then
+set calidad="mala";
+elseif NEW.nota_peli=5 then
+set calidad="regular";
+
+end if;
+insert into nueva_peliculas (id_peli,calidad) values (NEW.id_peli,calidad);
+end //
+insert into Peliculas values (10,"Peli inventada",4,"El migue","drama",7);
+select * from nueva_peliculas;
+
+/Ejercicio 5/
+
+delimiter //
+create trigger modificaciones
+after update on Peliculas
+for each row
+begin
+declare fecha date;
+declare hora time;
+set fecha = date(NOW());
+set hora = time(NOW());
+
+insert into informe_modificaciones (id,usuario,fecha,hora) values (OLD.id_peli,current_user(),fecha,hora);
+end //
+drop trigger modificaciones;
+select * from informe_modificaciones;
+Update peliculas set duracion=3 where duracion>3;*/
